@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario Editorial – Vitaminas Tecnológicas</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --surface2: #f0f4f8;
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --text: #1e293b;
+    --text2: #64748b;
+    --text3: #94a3b8;
+    --blue: #0077B5;
+    --blue-bg: #e8f4fd;
+    --blue-text: #0d4f7c;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --green-text: #14532d;
+    --amber: #d97706;
+    --amber-bg: #fef3c7;
+    --amber-text: #78350f;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── APIKEY GATE ── */
+  #gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #0077B5 0%, #005f93 100%);
+  }
+  #gate-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0,0,0,.2);
+    text-align: center;
+  }
+  #gate-box .logo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: .05em;
+    margin-bottom: .5rem;
+  }
+  #gate-box h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: .5rem;
+  }
+  #gate-box p {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+  #gate-box input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: monospace;
+    margin-bottom: 1rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  #gate-box input:focus { border-color: var(--blue); }
+  #gate-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #gate-btn:hover { background: #005f93; }
+  #gate-note {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: var(--shadow);
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .li-icon {
+    width: 28px; height: 28px;
+    background: var(--blue);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .li-icon svg { fill: #fff; width: 16px; height: 16px; }
+  .brand { font-size: 13px; font-weight: 700; color: var(--blue); }
+  .brand-sub { font-size: 12px; color: var(--text2); }
+  #btn-new {
+    padding: 8px 16px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  #btn-new:hover { background: #005f93; }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .stat-card .label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-card.published .value { color: var(--green); }
+  .stat-card.scheduled .value { color: var(--blue); }
+  .stat-card.draft .value { color: var(--amber); }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filters select {
+    padding: 7px 12px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .filters select:focus { border-color: var(--blue); }
+  .filter-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  /* ── CARDS GRID ── */
+  #posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 14px;
+  }
+  .post-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .post-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+  .badge-pub  { background: var(--green-bg);  color: var(--green-text); }
+  .badge-sch  { background: var(--blue-bg);   color: var(--blue-text);  }
+  .badge-dra  { background: var(--amber-bg);  color: var(--amber-text); }
+  .card-date  { font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .card-topic {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .card-meta  { font-size: 12px; color: var(--text2); }
+  .card-cta {
+    font-size: 12px;
+    color: var(--text2);
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 7px 10px;
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .card-draft-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-draft-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-sm {
+    flex: 1;
+    padding: 5px 0;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background .15s;
+    text-align: center;
+  }
+  .btn-sm:hover { background: var(--surface2); }
+  .btn-ai {
+    border-color: var(--blue);
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .btn-ai.done {
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .btn-del {
+    flex: 0 0 32px;
+    border-color: #fca5a5;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .btn-del:hover { background: var(--red-bg); }
+
+  /* ── EMPTY ── */
+  #empty-state {
+    display: none;
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text2);
+  }
+  #empty-state p { font-size: 15px; margin-bottom: 6px; }
+  #empty-state small { font-size: 13px; color: var(--text3); }
+
+  /* ── PANEL (form / draft) ── */
+  #panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  #panel-overlay.open { display: flex; }
+  #panel-box {
+    background: var(--surface);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .panel-header h2 { font-size: 16px; font-weight: 700; }
+  .btn-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text2);
+    line-height: 1;
+    padding: 4px;
+  }
+  .btn-close:hover { color: var(--text); }
+  .panel-body { padding: 1.5rem; flex: 1; }
+
+  /* Form */
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--blue); }
+  .form-group textarea { resize: vertical; min-height: 72px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+  .btn-cancel {
+    padding: 9px 18px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-save {
+    padding: 9px 20px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-save:hover { background: #005f93; }
+
+  /* Draft panel */
+  .draft-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .draft-avatar {
+    width: 40px; height: 40px;
+    background: var(--blue-bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .draft-avatar svg { fill: var(--blue); width: 20px; height: 20px; }
+  .draft-meta-text p { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .draft-meta-text small { font-size: 12px; color: var(--text2); }
+  #draft-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1.5rem 0;
+    color: var(--text2);
+    font-size: 13px;
+  }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #draft-text {
+    display: none;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .draft-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .btn-regen {
+    padding: 9px 16px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+    display: none;
+  }
+  .btn-copy {
+    padding: 9px 16px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    transition: background .2s;
+  }
+  .btn-copy:hover { background: #15803d; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-row { grid-template-columns: 1fr; }
+    header { padding: 0 1rem; }
+    main { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- API KEY GATE -->
+<div id="gate">
+  <div id="gate-box">
+    <div class="logo">⚡ VITAMINAS TECNOLÓGICAS</div>
+    <h1>Calendario Editorial con IA</h1>
+    <p>Ingresa tu API Key de Anthropic para activar la generación de borradores con Claude.</p>
+    <input type="password" id="key-input" placeholder="sk-ant-api03-..." autocomplete="off">
+    <button id="gate-btn" onclick="activateApp()">Ingresar al calendario →</button>
+    <p id="gate-note">
+      Tu clave se guarda solo en esta sesión del navegador.<br>
+      Obtén tu key en <strong>console.anthropic.com</strong>
+    </p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+
+  <header>
+    <div class="header-left">
+      <div class="li-icon">
+        <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+      </div>
+      <div>
+        <div class="brand">Vitaminas Tecnológicas</div>
+        <div class="brand-sub">Calendario editorial</div>
+      </div>
+    </div>
+    <button id="btn-new" onclick="openForm(null)">+ Nueva publicación</button>
+  </header>
+
+  <main>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Total</div>
+        <div class="value" id="st-total">0</div>
+      </div>
+      <div class="stat-card published">
+        <div class="label">Publicados</div>
+        <div class="value" id="st-pub">0</div>
+      </div>
+      <div class="stat-card scheduled">
+        <div class="label">Programados</div>
+        <div class="value" id="st-sch">0</div>
+      </div>
+      <div class="stat-card draft">
+        <div class="label">Borradores</div>
+        <div class="value" id="st-dra">0</div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <select id="f-status" onchange="renderPosts()">
+        <option value="">Todos los estados</option>
+        <option value="Borrador">Borrador</option>
+        <option value="Programado">Programado</option>
+        <option value="Publicado">Publicado</option>
+      </select>
+      <select id="f-format" onchange="renderPosts()">
+        <option value="">Todos los formatos</option>
+        <option value="Texto">Texto</option>
+        <option value="Carrusel">Carrusel</option>
+        <option value="Video">Video</option>
+        <option value="Artículo">Artículo</option>
+      </select>
+      <select id="f-platform" onchange="renderPosts()">
+        <option value="">Todas las redes</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Instagram">Instagram</option>
+        <option value="Facebook">Facebook</option>
+      </select>
+      <span class="filter-count" id="f-count"></span>
+    </div>
+
+    <div id="posts-grid"></div>
+    <div id="empty-state">
+      <p>Sin publicaciones con estos filtros</p>
+      <small>Cambia los filtros o agrega una nueva publicación</small>
+    </div>
+  </main>
+</div>
+
+<!-- PANEL OVERLAY -->
+<div id="panel-overlay">
+  <div id="panel-box">
+    <div class="panel-header">
+      <h2 id="panel-title">Nueva publicación</h2>
+      <button class="btn-close" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+</div>
+
+<script>
+let API_KEY = '';
+let posts = [
+  { id:1, date:"2026-04-07", topic:"5 formas de usar Claude en tu trabajo diario", platform:"LinkedIn", format:"Carrusel", status:"Programado", cta:"¿Ya usas IA en tu día a día? Cuéntame abajo", notes:"Incluir capturas de pantalla reales", draft:"" },
+  { id:2, date:"2026-04-10", topic:"Por qué los profesionales de sistemas deben aprender prompt engineering", platform:"LinkedIn", format:"Texto", status:"Borrador", cta:"Guarda este post para compartir con tus alumnos", notes:"", draft:"" },
+  { id:3, date:"2026-04-14", topic:"Tutorial: automatiza tu calendario editorial con IA", platform:"LinkedIn", format:"Video", status:"Programado", cta:"Sígueme para más tutoriales cada semana", notes:"Video corto, 60-90 segundos", draft:"" },
+  { id:4, date:"2026-04-03", topic:"La IA no reemplaza, transforma el trabajo", platform:"LinkedIn", format:"Texto", status:"Publicado", cta:"Comparte si estás de acuerdo", notes:"", draft:"¿Sientes que la IA amenaza tu trabajo?\n\nYo también lo pensé.\n\nPero después de meses explorando herramientas como Claude, llegué a una conclusión distinta:\n\nLa IA no reemplaza personas. Reemplaza tareas repetitivas y nos libera para lo que realmente importa: pensar, crear, conectar.\n\nComo ingeniera de sistemas y docente, uso la IA para:\n→ Documentar procesos técnicos 3x más rápido\n→ Preparar materiales de clase más interactivos\n→ Generar ideas de contenido cuando el bloqueo creativo llega\n\nLa pregunta ya no es si la IA te reemplazará. Es: ¿estás aprendiendo a trabajar con ella?\n\n#InteligenciaArtificial #VitaminasTecnológicas #TransformaciónDigital #Productividad" },
+  { id:5, date:"2026-04-21", topic:"Cómo construir un portafolio digital con herramientas gratuitas", platform:"LinkedIn", format:"Artículo", status:"Borrador", cta:"¿Te gustaría un template gratuito? Comenta SÍ", notes:"Mencionar Canva, Notion, GitHub Pages", draft:"" },
+  { id:6, date:"2026-04-28", topic:"Recap: avances de IA en abril 2026", platform:"LinkedIn", format:"Carrusel", status:"Borrador", cta:"¿Qué novedad te sorprendió más este mes?", notes:"", draft:"" }
+];
+let nextId = 7;
+let activeDraftId = null;
+
+function activateApp() {
+  const k = document.getElementById('key-input').value.trim();
+  if (!k.startsWith('sk-ant-')) {
+    document.getElementById('key-input').style.borderColor = '#dc2626';
+    document.getElementById('gate-note').innerHTML = '<span style="color:#dc2626">⚠ La clave debe comenzar con sk-ant-</span>';
+    return;
+  }
+  API_KEY = k;
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  renderPosts();
+  updateStats();
+}
+
+document.getElementById('key-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') activateApp();
+});
+
+function fmtDate(d) {
+  if (!d) return '';
+  return new Date(d + 'T12:00:00').toLocaleDateString('es-PE', { day:'numeric', month:'short', year:'numeric' });
+}
+
+function badgeClass(s) {
+  return s === 'Publicado' ? 'badge-pub' : s === 'Programado' ? 'badge-sch' : 'badge-dra';
+}
+
+function renderPosts() {
+  const sf = document.getElementById('f-status').value;
+  const ff = document.getElementById('f-format').value;
+  const pf = document.getElementById('f-platform').value;
+  let filtered = posts.filter(p =>
+    (!sf || p.status === sf) && (!ff || p.format === ff) && (!pf || p.platform === pf)
+  ).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  document.getElementById('f-count').textContent =
+    filtered.length + ' publicación' + (filtered.length !== 1 ? 'es' : '');
+
+  const empty = document.getElementById('empty-state');
+  const grid  = document.getElementById('posts-grid');
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="post-card">
+      <div class="card-top">
+        <span class="badge ${badgeClass(p.status)}">${p.status}</span>
+        <span class="card-date">${fmtDate(p.date)}</span>
+      </div>
+      <div>
+        <div class="card-topic">${p.topic}</div>
+        <div class="card-meta">${p.platform} · ${p.format}</div>
+      </div>
+      ${p.cta ? `<div class="card-cta">"${p.cta}"</div>` : ''}
+      ${p.draft ? `<div class="card-draft-badge">Borrador IA listo</div>` : ''}
+      <div class="card-actions">
+        <button class="btn-sm" onclick="openForm(${p.id})">Editar</button>
+        <button class="btn-sm btn-ai ${p.draft ? 'done' : ''}" onclick="openDraft(${p.id})">
+          ${p.draft ? 'Ver borrador' : 'Generar con IA'}
+        </button>
+        <button class="btn-sm btn-del" onclick="deletePost(${p.id})">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStats() {
+  document.getElementById('st-total').textContent = posts.length;
+  document.getElementById('st-pub').textContent   = posts.filter(p => p.status === 'Publicado').length;
+  document.getElementById('st-sch').textContent   = posts.filter(p => p.status === 'Programado').length;
+  document.getElementById('st-dra').textContent   = posts.filter(p => p.status === 'Borrador').length;
+}
+
+function deletePost(id) {
+  if (!confirm('¿Eliminar esta publicación?')) return;
+  posts = posts.filter(p => p.id !== id);
+  renderPosts();
+  updateStats();
+}
+
+// ── PANEL ──
+function openPanel(title) {
+  document.getElementById('panel-title').textContent = title;
+  document.getElementById('panel-overlay').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('panel-overlay').classList.remove('open');
+  document.getElementById('panel-body').innerHTML = '';
+}
+document.getElementById('panel-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('panel-overlay')) closePanel();
+});
+
+// ── FORM ──
+function openForm(id) {
+  const p = id ? posts.find(x => x.id === id) : null;
+  openPanel(p ? 'Editar publicación' : 'Nueva publicación');
+  document.getElementById('panel-body').innerHTML = `
+    <div class="form-group">
+      <label>Tema / título del post *</label>
+      <input id="fl-topic" type="text" placeholder="¿De qué trata este post?" value="${p ? p.topic.replace(/"/g,'&quot;') : ''}">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fecha</label>
+        <input id="fl-date" type="date" value="${p ? p.date : new Date().toISOString().split('T')[0]}">
+      </div>
+      <div class="form-group">
+        <label>Formato</label>
+        <select id="fl-format">
+          ${['Texto','Carrusel','Video','Artículo'].map(f =>
+            `<option ${p && p.format===f ? 'selected' : ''}>${f}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Red social</label>
+        <select id="fl-platform">
+          ${['LinkedIn','Instagram','Facebook'].map(f =>
+            `<option ${p && p.platform===f ? 'selected' : ''}>${f}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="fl-status">
+          ${['Borrador','Programado','Publicado'].map(f =>
+            `<option ${p && p.status===f ? 'selected' : ''}>${f}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>CTA (llamada a la acción)</label>
+      <input id="fl-cta" type="text" placeholder="Ej: Comenta abajo qué herramienta usas..." value="${p ? p.cta.replace(/"/g,'&quot;') : ''}">
+    </div>
+    <div class="form-group">
+      <label>Notas internas</label>
+      <textarea id="fl-notes" placeholder="Referencias, recursos, recordatorios...">${p ? p.notes : ''}</textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closePanel()">Cancelar</button>
+      <button class="btn-save" onclick="savePost(${id || 'null'})">Guardar publicación</button>
+    </div>
+  `;
+}
+
+function savePost(id) {
+  const topic = document.getElementById('fl-topic').value.trim();
+  if (!topic) { alert('El tema es obligatorio'); return; }
+  const d = {
+    topic,
+    date:     document.getElementById('fl-date').value,
+    format:   document.getElementById('fl-format').value,
+    platform: document.getElementById('fl-platform').value,
+    status:   document.getElementById('fl-status').value,
+    cta:      document.getElementById('fl-cta').value,
+    notes:    document.getElementById('fl-notes').value
+  };
+  if (id) {
+    const i = posts.findIndex(p => p.id === id);
+    posts[i] = { ...posts[i], ...d };
+  } else {
+    posts.push({ id: nextId++, draft: '', ...d });
+  }
+  closePanel();
+  renderPosts();
+  updateStats();
+}
+
+// ── DRAFT ──
+function openDraft(id) {
+  activeDraftId = id;
+  const p = posts.find(x => x.id === id);
+  openPanel('Borrador con IA');
+  document.getElementById('panel-body').innerHTML = `
+    <div class="draft-meta">
+      <div class="draft-avatar">
+        <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+      </div>
+      <div class="draft-meta-text">
+        <p>${p.topic}</p>
+        <small>${p.platform} · ${p.format} · ${fmtDate(p.date)}</small>
+      </div>
+    </div>
+    <div id="draft-loading"><div class="spinner"></div> Generando con Claude...</div>
+    <div id="draft-text"></div>
+    <div class="draft-actions">
+      <button class="btn-regen" id="btn-regen" onclick="regenDraft()">↺ Regenerar</button>
+      <button class="btn-copy" id="btn-copy" onclick="copyDraft()">Copiar texto</button>
+      <button class="btn-cancel" onclick="closePanel()">Cerrar</button>
+    </div>
+  `;
+  if (p.draft) {
+    showDraft(p.draft);
+  } else {
+    callClaude(id);
+  }
+}
+
+function showDraft(text) {
+  document.getElementById('draft-loading').style.display = 'none';
+  const dt = document.getElementById('draft-text');
+  dt.style.display = 'block';
+  dt.textContent = text;
+  document.getElementById('btn-regen').style.display = 'inline-block';
+  document.getElementById('btn-copy').style.display  = 'inline-block';
+}
+
+function regenDraft() {
+  const i = posts.findIndex(p => p.id === activeDraftId);
+  posts[i].draft = '';
+  document.getElementById('draft-loading').style.display = 'flex';
+  document.getElementById('draft-text').style.display    = 'none';
+  document.getElementById('btn-regen').style.display     = 'none';
+  document.getElementById('btn-copy').style.display      = 'none';
+  callClaude(activeDraftId);
+}
+
+function copyDraft() {
+  const text = document.getElementById('draft-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.getElementById('btn-copy');
+    b.textContent = '✓ Copiado';
+    setTimeout(() => { b.textContent = 'Copiar texto'; }, 2000);
+  });
+}
+
+async function callClaude(id) {
+  const p = posts.find(x => x.id === id);
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: 'Eres experta en marketing de contenidos para LinkedIn, especializada en marcas personales de tecnología y educación en Latinoamérica. Escribes en español, con voz auténtica, profesional y cercana.',
+        messages: [{ role: 'user', content:
+          `Crea un post para ${p.platform} sobre: "${p.topic}".\n\nFormato: ${p.format}${p.cta ? `\nCTA: "${p.cta}"` : ''}${p.notes ? `\nNotas: ${p.notes}` : ''}\n\nMarca: Vitaminas Tecnológicas — educación en IA, herramientas digitales y productividad. Tono educativo, auténtico, sin exagerar.\n\n${p.format === 'Carrusel' ? 'Estructura como carrusel: Slide 1 (gancho) + slides del contenido + slide final (CTA).' : p.format === 'Artículo' ? 'Estructura: intro potente + 3-4 secciones con subtítulos + cierre.' : 'Post directo: gancho primera línea, desarrollo, CTA.'}\n\nMáx. 280 palabras. Termina con 4-5 hashtags relevantes.`
+        }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content[0].text;
+    const i = posts.findIndex(x => x.id === id);
+    posts[i].draft = text;
+    showDraft(text);
+    renderPosts();
+  } catch(e) {
+    document.getElementById('draft-loading').innerHTML =
+      `<span style="color:#dc2626;font-size:13px;">⚠ Error: ${e.message}</span>`;
+  }
+}
+</script>
+</body>
+</html>
