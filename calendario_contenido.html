@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario de Contenido – Vitaminas Tecnológicas</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --navy: #0f2544;
+  --navy-mid: #1a3a6b;
+  --gold: #f5c518;
+  --gold-light: #fff3c4;
+  --white: #ffffff;
+  --bg: #f0f4fb;
+  --text: #1e293b;
+  --muted: #64748b;
+
+  --python:   #3b82f6;
+  --sistemas: #10b981;
+  --tools:    #f59e0b;
+  --consejos: #8b5cf6;
+  --ia:       #ef4444;
+  --scrum:    #06b6d4;
+}
+body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); padding:32px 20px; }
+
+.page { max-width:900px; margin:0 auto; }
+
+/* HEADER */
+.header {
+  background:var(--navy);
+  border-radius:20px;
+  padding:32px 40px;
+  margin-bottom:28px;
+  position:relative;
+  overflow:hidden;
+}
+.header::after {
+  content:'';
+  position:absolute; top:-60px; right:-60px;
+  width:200px; height:200px;
+  background:rgba(245,197,24,0.08);
+  border-radius:50%;
+}
+.header-top { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.brand { display:flex; align-items:center; gap:12px; }
+.brand-icon {
+  width:48px; height:48px;
+  background:var(--gold);
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; font-weight:900; color:var(--navy);
+  font-family:'Space Mono',monospace;
+  flex-shrink:0;
+}
+.brand-name strong { display:block; font-size:18px; font-weight:900; color:#fff; }
+.brand-name span   { font-size:12px; color:rgba(255,255,255,0.55); font-weight:600; }
+.header-meta { text-align:right; }
+.header-meta .label { font-size:11px; color:rgba(255,255,255,0.45); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+.header-meta .value { font-size:22px; font-weight:900; color:var(--gold); }
+.header h1 { font-size:28px; font-weight:900; color:#fff; margin-top:20px; line-height:1.2; }
+.header p  { margin-top:6px; font-size:14px; color:rgba(255,255,255,0.6); }
+
+/* LEGEND */
+.legend {
+  display:flex; flex-wrap:wrap; gap:10px;
+  margin-bottom:24px;
+}
+.leg-item {
+  display:flex; align-items:center; gap:7px;
+  background:#fff;
+  border-radius:20px;
+  padding:6px 14px;
+  font-size:12px; font-weight:700;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+}
+.leg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* WEEKS GRID */
+.weeks { display:flex; flex-direction:column; gap:16px; }
+
+/* WEEK CARD */
+.week-card {
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(15,37,68,0.07);
+  border:1px solid rgba(15,37,68,0.06);
+}
+.week-header {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 22px;
+  background:var(--navy);
+  cursor:pointer;
+  user-select:none;
+}
+.week-num {
+  width:36px; height:36px;
+  background:var(--gold);
+  border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Space Mono',monospace;
+  font-size:14px; font-weight:700;
+  color:var(--navy);
+  flex-shrink:0;
+}
+.week-info { flex:1; }
+.week-date { font-size:11px; color:rgba(255,255,255,0.5); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
+.week-topic { font-size:15px; font-weight:800; color:#fff; margin-top:2px; }
+.topic-tag {
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:11px; font-weight:800;
+  color:#fff;
+  letter-spacing:0.3px;
+}
+.chevron { color:rgba(255,255,255,0.4); font-size:18px; transition:transform 0.3s; }
+.week-card.open .chevron { transform:rotate(180deg); }
+
+/* WEEK BODY */
+.week-body {
+  display:none;
+  padding:20px 22px;
+  border-top:2px solid var(--bg);
+}
+.week-card.open .week-body { display:block; }
+
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.info-box {
+  background:var(--bg);
+  border-radius:12px;
+  padding:14px 16px;
+}
+.info-box .ib-label {
+  font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:6px;
+}
+.info-box .ib-value { font-size:13px; font-weight:700; color:var(--text); line-height:1.4; }
+
+.content-points { list-style:none; }
+.content-points li {
+  display:flex; align-items:flex-start; gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid var(--bg);
+  font-size:13px; font-weight:600; color:var(--text);
+  line-height:1.4;
+}
+.content-points li:last-child { border-bottom:none; }
+.cp-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+
+.caption-box {
+  margin-top:14px;
+  background:var(--gold-light);
+  border-left:4px solid var(--gold);
+  border-radius:0 10px 10px 0;
+  padding:12px 16px;
+}
+.caption-box .cb-label { font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#92400e; margin-bottom:4px; }
+.caption-box .cb-text  { font-size:13px; font-weight:700; color:#78350f; line-height:1.5; font-style:italic; }
+
+.hashtag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.hashtag {
+  background:var(--navy);
+  color:var(--gold);
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:11px; font-weight:700;
+  font-family:'Space Mono',monospace;
+}
+
+/* FOOTER */
+.footer {
+  margin-top:28px;
+  background:var(--navy);
+  border-radius:16px;
+  padding:20px 28px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.footer-text { color:rgba(255,255,255,0.6); font-size:13px; font-weight:600; }
+.footer-text strong { color:var(--gold); }
+.progress-bar { display:flex; gap:4px; }
+.pb-seg {
+  width:28px; height:8px;
+  border-radius:4px;
+  background:rgba(255,255,255,0.15);
+}
+.pb-seg.done { background:var(--gold); }
+
+/* Print */
+@media print {
+  .week-body { display:block !important; }
+  .chevron { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon">&lt;/&gt;</div>
+        <div class="brand-name">
+          <strong>Vitaminas Tecnológicas</strong>
+          <span>Ing. Sistemas · Docente Universitario</span>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="label">Publicación</div>
+        <div class="value">Lunes</div>
+      </div>
+    </div>
+    <h1>📅 Calendario de Contenido<br>— 8 Semanas</h1>
+    <p>Marzo – Abril 2026 · Una infografía cada lunes · Instagram & Facebook</p>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--python)"></div> Python & Programación</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--sistemas)"></div> Ing. de Sistemas</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--tools)"></div> Herramientas Tech</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--consejos)"></div> Consejos Universitarios</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--ia)"></div> Inteligencia Artificial</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--scrum)"></div> Scrum & Metodologías</div>
+  </div>
+
+  <!-- WEEKS -->
+  <div class="weeks" id="weeks"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-text">Haz clic en cada semana para ver el detalle completo · <strong>@vitaminas_tecnologicas</strong></div>
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+</div>
+
+<script>
+const weeks = [
+  {
+    num: 1,
+    date: "Lunes 9 de Marzo, 2026",
+    topic: "¿Qué es Python y por qué aprenderlo?",
+    category: "python",
+    color: "#3b82f6",
+    emoji: "🐍",
+    objetivo: "Generar interés en Python para estudiantes que inician en programación.",
+    formato: "Infografía con 6 razones + comparativa de lenguajes",
+    puntos: [
+      { icon:"🎯", text:"Python es el lenguaje #1 para IA, Data Science y automatización" },
+      { icon:"📊", text:"Comparativa: Python vs Java vs C++ en curva de aprendizaje" },
+      { icon:"💼", text:"Top 5 campos laborales donde Python es requerido" },
+      { icon:"⚡", text:"Muestra de código: 3 líneas de Python vs 15 en Java para la misma tarea" },
+      { icon:"🎓", text:"Tip: cómo instalar Python en cualquier sistema operativo" }
+    ],
+    caption: "🐍 ¿Sabías que Python puede aprenderse en semanas y usarse toda la vida? Aquí te cuento por qué es el lenguaje favorito de ingenieros, científicos y docentes. 💻 Guarda esta infografía y empieza hoy. #VitaminasTecnológicas",
+    hashtags: ["#Python", "#Programación", "#AprendeCode", "#IngenieríaDeSistemas", "#VitaminasTecnológicas", "#EstudiantesUniversitarios"]
+  },
+  {
+    num: 2,
+    date: "Lunes 16 de Marzo, 2026",
+    topic: "Git: Control de versiones para principiantes",
+    category: "tools",
+    color: "#f59e0b",
+    emoji: "🔧",
+    objetivo: "Enseñar los comandos esenciales de Git de forma visual y práctica.",
+    formato: "Infografía tipo 'cheat sheet' con los 8 comandos más usados",
+    puntos: [
+      { icon:"📦", text:"git init, git clone – cómo empezar un repositorio" },
+      { icon:"📸", text:"git add, git commit – guardar tu trabajo correctamente" },
+      { icon:"🔀", text:"git push, git pull – colaborar en equipo sin conflictos" },
+      { icon:"🌿", text:"git branch, git merge – trabajar en paralelo" },
+      { icon:"💡", text:"Flujo de trabajo estándar en proyectos universitarios y empresariales" }
+    ],
+    caption: "🔧 Git es la herramienta que separa a los programadores que 'andan por ahí' de los que trabajan en equipo de verdad. Aquí el cheat sheet que necesitas guardar. ⬇️ #VitaminasTecnológicas",
+    hashtags: ["#Git", "#GitHub", "#ControlDeVersiones", "#HerramientasTech", "#VitaminasTecnológicas", "#DevTools"]
+  },
+  {
+    num: 3,
+    date: "Lunes 23 de Marzo, 2026",
+    topic: "Inteligencia Artificial: Conceptos que todo ingeniero debe conocer",
+    category: "ia",
+    color: "#ef4444",
+    emoji: "🤖",
+    objetivo: "Desmitificar la IA con conceptos básicos accesibles para estudiantes.",
+    formato: "Infografía con mapa conceptual: IA > Machine Learning > Deep Learning",
+    puntos: [
+      { icon:"🧠", text:"Diferencia entre IA, Machine Learning y Deep Learning explicada simple" },
+      { icon:"📈", text:"Casos de uso reales: diagnóstico médico, recomendaciones, chatbots" },
+      { icon:"🛠️", text:"Herramientas para empezar: TensorFlow, Scikit-learn, ChatGPT API" },
+      { icon:"📚", text:"Recursos gratuitos para aprender IA desde cero (cursos y plataformas)" },
+      { icon:"⚠️", text:"Mitos vs Realidades: lo que la IA puede y no puede hacer hoy" }
+    ],
+    caption: "🤖 ¿IA, Machine Learning, Deep Learning… todos los días escuchas estos términos pero ¿sabes qué significa cada uno? Aquí la diferencia visual que necesitabas. 🧠 #VitaminasTecnológicas",
+    hashtags: ["#InteligenciaArtificial", "#MachineLearning", "#DeepLearning", "#IA", "#VitaminasTecnológicas", "#TechEducation"]
+  },
+  {
+    num: 4,
+    date: "Lunes 30 de Marzo, 2026",
+    topic: "5 Consejos para sobrevivir la universidad de Sistemas",
+    category: "consejos",
+    color: "#8b5cf6",
+    emoji: "🎓",
+    objetivo: "Conectar emocionalmente con estudiantes universitarios con consejos prácticos.",
+    formato: "Infografía de tips numerados con íconos ilustrativos",
+    puntos: [
+      { icon:"📅", text:"Organiza tu semana: bloques de estudio + tiempo para proyectos de código" },
+      { icon:"🤝", text:"Construye tu red desde el primer semestre: compañeros de hoy = colegas de mañana" },
+      { icon:"💻", text:"Aprende más allá del pensum: GitHub, portafolio y proyectos propios" },
+      { icon:"🧘", text:"Maneja el síndrome del impostor: todos empezamos sin saber nada" },
+      { icon:"🔍", text:"Aprovecha profesores y tutorías – son recursos infrautilizados y gratuitos" }
+    ],
+    caption: "🎓 Nadie te lo dice en la universidad, pero estos 5 hábitos marcan la diferencia entre sobrevivir y brillar en Ing. de Sistemas. ¿Cuál ya aplicas? Cuéntame en comentarios 👇 #VitaminasTecnológicas",
+    hashtags: ["#Universitarios", "#IngenieríaDeSistemas", "#ConsejosEstudiantes", "#VidaUniversitaria", "#VitaminasTecnológicas", "#TipsAcadémicos"]
+  },
+  {
+    num: 5,
+    date: "Lunes 6 de Abril, 2026",
+    topic: "Scrum en 60 segundos: la metodología ágil que usarás toda tu carrera",
+    category: "scrum",
+    color: "#06b6d4",
+    emoji: "🔄",
+    objetivo: "Explicar Scrum visualmente para estudiantes y profesionales junior.",
+    formato: "Infografía del ciclo Scrum con roles, eventos y artefactos clave",
+    puntos: [
+      { icon:"👥", text:"Roles: Product Owner, Scrum Master y Development Team – quién hace qué" },
+      { icon:"🗓️", text:"Sprints: ciclos de 1-4 semanas con entregables concretos" },
+      { icon:"📋", text:"Product Backlog, Sprint Backlog y el incremento del producto" },
+      { icon:"🔁", text:"Daily Scrum, Sprint Review y Retrospectiva – reuniones que importan" },
+      { icon:"🏢", text:"Dónde se usa Scrum: empresas de software, startups, proyectos universitarios" }
+    ],
+    caption: "🔄 Scrum no es complicado, pero poca gente lo explica visualmente. Esta infografía resume TODO lo que necesitas saber antes de entrar a tu primer proyecto ágil. 💼 #VitaminasTecnológicas",
+    hashtags: ["#Scrum", "#MetodologíaÁgil", "#Agile", "#GestiónDeProyectos", "#VitaminasTecnológicas", "#SoftwareDevelopment"]
+  },
+  {
+    num: 6,
+    date: "Lunes 13 de Abril, 2026",
+    topic: "Arquitectura de Software: monolito vs microservicios",
+    category: "sistemas",
+    color: "#10b981",
+    emoji: "🏗️",
+    objetivo: "Introducir conceptos de arquitectura de forma visual y comparativa.",
+    formato: "Infografía comparativa lado a lado con casos de uso reales",
+    puntos: [
+      { icon:"🧱", text:"Monolito: qué es, ventajas para proyectos pequeños y cuándo usarlo" },
+      { icon:"🔩", text:"Microservicios: independencia, escalabilidad y complejidad operacional" },
+      { icon:"📊", text:"Tabla comparativa: rendimiento, despliegue, mantenimiento y equipo" },
+      { icon:"🌐", text:"Ejemplos reales: Netflix (microservicios) vs aplicación universitaria (monolito)" },
+      { icon:"🎯", text:"¿Cuál elegir? Guía de decisión rápida para proyectos reales" }
+    ],
+    caption: "🏗️ ¿Monolito o microservicios? La respuesta que muchos dan mal en entrevistas. Aquí la diferencia visual con ejemplos reales. 🚀 Guarda esto para cuando diseñes tu próximo sistema. #VitaminasTecnológicas",
+    hashtags: ["#ArquitecturaDeSoftware", "#Microservicios", "#IngenieríaDeSistemas", "#SoftwareDesign", "#VitaminasTecnológicas", "#TechTips"]
+  },
+  {
+    num: 7,
+    date: "Lunes 20 de Abril, 2026",
+    topic: "Python Intermedio: Funciones, listas y diccionarios",
+    category: "python",
+    color: "#3b82f6",
+    emoji: "🐍",
+    objetivo: "Dar continuidad a la serie de Python con contenido para nivel intermedio.",
+    formato: "Infografía con bloques de código comentado + tips de buenas prácticas",
+    puntos: [
+      { icon:"📝", text:"Funciones: definición, parámetros, return y docstrings" },
+      { icon:"📋", text:"Listas vs Tuplas vs Sets: cuándo usar cada una" },
+      { icon:"🗂️", text:"Diccionarios: acceder, agregar, eliminar y recorrer con .items()" },
+      { icon:"⚡", text:"List comprehension: la forma pythónica de crear listas en una línea" },
+      { icon:"✅", text:"Buenas prácticas: nombres descriptivos, PEP8 y comentarios útiles" }
+    ],
+    caption: "🐍 Ya aprendiste los básicos, ahora es momento de subir el nivel. Funciones, listas y diccionarios son el 80% de lo que usarás en cualquier proyecto Python. 💡 #VitaminasTecnológicas",
+    hashtags: ["#Python", "#ProgramaciónIntermedia", "#CódigoPython", "#AprendeCode", "#VitaminasTecnológicas", "#PEP8"]
+  },
+  {
+    num: 8,
+    date: "Lunes 27 de Abril, 2026",
+    topic: "VS Code: 10 atajos que multiplican tu productividad",
+    category: "tools",
+    color: "#f59e0b",
+    emoji: "⚡",
+    objetivo: "Contenido altamente compartible con valor inmediato y práctico.",
+    formato: "Infografía tipo cheat sheet con atajos de teclado visualizados",
+    puntos: [
+      { icon:"⌨️", text:"Ctrl+P – buscar cualquier archivo al instante" },
+      { icon:"🔍", text:"Ctrl+Shift+F – buscar en todo el proyecto" },
+      { icon:"✂️", text:"Alt+↑/↓ – mover líneas de código sin cortar y pegar" },
+      { icon:"📌", text:"Ctrl+D – seleccionar múltiples ocurrencias de una palabra" },
+      { icon:"🧩", text:"Top 3 extensiones para Python, Git y trabajo en equipo" }
+    ],
+    caption: "⚡ El programador que conoce sus herramientas produce el doble que el que no. Aquí los 10 atajos de VS Code que uso todos los días como docente e ingeniero. 🖥️ ¿Cuál no conocías? #VitaminasTecnológicas",
+    hashtags: ["#VSCode", "#ProductividadDev", "#HerramientasTech", "#TipsVSCode", "#VitaminasTecnológicas", "#Programación"]
+  }
+];
+
+const catColors = {
+  python:"#3b82f6", tools:"#f59e0b", ia:"#ef4444",
+  consejos:"#8b5cf6", scrum:"#06b6d4", sistemas:"#10b981"
+};
+
+const weeksEl = document.getElementById('weeks');
+const progressEl = document.getElementById('progress');
+
+weeks.forEach((w, i) => {
+  // Progress bar segment
+  const seg = document.createElement('div');
+  seg.className = 'pb-seg';
+  progressEl.appendChild(seg);
+
+  const card = document.createElement('div');
+  card.className = 'week-card';
+  card.innerHTML = `
+    <div class="week-header" onclick="toggleWeek(this)">
+      <div class="week-num">${String(w.num).padStart(2,'0')}</div>
+      <div class="week-info">
+        <div class="week-date">${w.date}</div>
+        <div class="week-topic">${w.emoji} ${w.topic}</div>
+      </div>
+      <span class="topic-tag" style="background:${w.color}">${w.category === 'python' ? 'Python' : w.category === 'tools' ? 'Herramientas' : w.category === 'ia' ? 'IA' : w.category === 'consejos' ? 'Consejos' : w.category === 'scrum' ? 'Scrum' : 'Sistemas'}</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-body">
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="ib-label">🎯 Objetivo</div>
+          <div class="ib-value">${w.objetivo}</div>
+        </div>
+        <div class="info-box">
+          <div class="ib-label">🖼️ Formato</div>
+          <div class="ib-value">${w.formato}</div>
+        </div>
+      </div>
+      <ul class="content-points">
+        ${w.puntos.map(p => `<li><span class="cp-icon">${p.icon}</span>${p.text}</li>`).join('')}
+      </ul>
+      <div class="caption-box">
+        <div class="cb-label">✍️ Caption sugerido</div>
+        <div class="cb-text">${w.caption}</div>
+      </div>
+      <div class="hashtag-row">
+        ${w.hashtags.map(h => `<span class="hashtag">${h}</span>`).join('')}
+      </div>
+    </div>
+  `;
+  weeksEl.appendChild(card);
+});
+
+function toggleWeek(header) {
+  const card = header.parentElement;
+  card.classList.toggle('open');
+}
+
+// Open first by default
+document.querySelector('.week-card').classList.add('open');
+</script>
+</body>
+</html>
