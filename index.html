@@ -3,441 +3,510 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calendario Editorial – Vitaminas Tecnológicas</title>
+<title>Calendario Editorial - Vitaminas Tecnologicas</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f7f8fa; --surface: #ffffff; --surface2: #f0f4f8;
-    --border: #e2e8f0; --border2: #cbd5e1;
-    --text: #1e293b; --text2: #64748b; --text3: #94a3b8;
-    --navy: #1B3A6B; --yellow: #F5C842;
-    --blue: #0077B5; --blue-bg: #e8f4fd; --blue-text: #0d4f7c;
-    --green: #16a34a; --green-bg: #dcfce7; --green-text: #14532d;
-    --amber: #d97706; --amber-bg: #fef3c7; --amber-text: #78350f;
-    --red: #dc2626; --red-bg: #fee2e2;
-    --insta: #E1306C; --insta-bg: #fce4ec;
-    --fb: #1877F2; --fb-bg: #e8f0fe;
-    --radius: 10px; --radius-sm: 6px;
-    --shadow: 0 1px 3px rgba(0,0,0,.08); --shadow-md: 0 4px 12px rgba(0,0,0,.1);
-  }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
-
-  #gate { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; background: linear-gradient(135deg,#1B3A6B 0%,#0d2347 100%); }
-  #gate-box { background:#fff; border-radius:20px; padding:2.5rem 2rem; max-width:420px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,.3); text-align:center; }
-  #gate-logo { width:140px; margin:0 auto 1.25rem; display:block; }
-  #gate-box h1 { font-size:20px; font-weight:700; color:var(--navy); margin-bottom:.4rem; }
-  #gate-box .subtitle { font-size:13px; color:var(--text2); margin-bottom:1.5rem; line-height:1.6; }
-  #gate-box input { width:100%; padding:10px 14px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); font-size:13px; font-family:monospace; margin-bottom:1rem; outline:none; transition:border-color .2s; }
-  #gate-box input:focus { border-color:var(--navy); }
-  #gate-btn { width:100%; padding:12px; background:var(--navy); color:#fff; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:700; cursor:pointer; }
-  #gate-btn:hover { background:#0d2347; }
-  #gate-note { font-size:11px; color:var(--text3); margin-top:1rem; line-height:1.6; }
-  .li-link { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--blue); text-decoration:none; margin-top:.75rem; font-weight:500; }
-
-  header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 1.5rem; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10; box-shadow:var(--shadow); }
-  .header-left { display:flex; align-items:center; gap:12px; }
-  .header-logo { height:38px; width:auto; }
-  .header-divider { width:1px; height:28px; background:var(--border2); }
-  .header-text .brand { font-size:13px; font-weight:700; color:var(--navy); }
-  .header-text .brand-sub { font-size:11px; color:var(--text2); }
-  #btn-new { padding:8px 18px; background:var(--navy); color:#fff; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
-  #btn-new:hover { background:#0d2347; }
-
-  main { max-width:1100px; margin:0 auto; padding:1.5rem; }
-
-  .stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:1.5rem; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem; box-shadow:var(--shadow); }
-  .stat-card .label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--text2); margin-bottom:6px; }
-  .stat-card .value { font-size:28px; font-weight:700; color:var(--text); }
-  .stat-card.published .value { color:var(--green); }
-  .stat-card.scheduled .value { color:var(--navy); }
-  .stat-card.draft .value { color:var(--amber); }
-
-  .filters { display:flex; gap:8px; margin-bottom:1.25rem; align-items:center; flex-wrap:wrap; }
-  .filters select { padding:7px 12px; border:1px solid var(--border2); border-radius:var(--radius-sm); font-size:13px; background:var(--surface); color:var(--text); cursor:pointer; outline:none; }
-  .filters select:focus { border-color:var(--navy); }
-  .filter-count { margin-left:auto; font-size:12px; color:var(--text2); }
-
-  #posts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
-  .post-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow); transition:box-shadow .2s,transform .2s; }
-  .post-card:hover { box-shadow:var(--shadow-md); transform:translateY(-1px); }
-  .card-top { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
-  .badge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:99px; white-space:nowrap; }
-  .badge-pub { background:var(--green-bg); color:var(--green-text); }
-  .badge-sch { background:#e8edf5; color:var(--navy); }
-  .badge-dra { background:var(--amber-bg); color:var(--amber-text); }
-  .platform-tag { font-size:10px; font-weight:700; padding:2px 7px; border-radius:99px; white-space:nowrap; }
-  .ptag-li { background:var(--blue-bg); color:var(--blue-text); }
-  .ptag-ig { background:var(--insta-bg); color:var(--insta); }
-  .ptag-fb { background:var(--fb-bg); color:var(--fb); }
-  .card-date { font-size:12px; color:var(--text2); white-space:nowrap; }
-  .card-topic { font-size:14px; font-weight:600; color:var(--text); line-height:1.4; }
-  .card-meta { font-size:12px; color:var(--text2); }
-  .card-cta { font-size:12px; color:var(--text2); background:var(--surface2); border-radius:var(--radius-sm); padding:7px 10px; font-style:italic; line-height:1.4; }
-  .card-draft-badge { font-size:11px; font-weight:600; color:var(--green); display:flex; align-items:center; gap:4px; }
-  .card-draft-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
-  .card-actions { display:flex; gap:6px; margin-top:auto; padding-top:10px; border-top:1px solid var(--border); }
-  .btn-sm { flex:1; padding:5px 0; border:1px solid var(--border2); background:var(--surface); border-radius:var(--radius-sm); font-size:12px; color:var(--text); cursor:pointer; transition:background .15s; text-align:center; }
-  .btn-sm:hover { background:var(--surface2); }
-  .btn-ai { border-color:var(--navy); color:var(--navy); font-weight:600; }
-  .btn-ai.done { border-color:var(--green); color:var(--green); }
-  .btn-del { flex:0 0 32px; border-color:#fca5a5; color:var(--red); font-weight:700; }
-  .btn-del:hover { background:var(--red-bg); }
-
-  #empty-state { display:none; text-align:center; padding:4rem 1rem; color:var(--text2); }
-
-  #panel-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100; align-items:center; justify-content:center; padding:1rem; }
-  #panel-overlay.open { display:flex; }
-  #panel-box { background:var(--surface); border-radius:14px; width:100%; max-width:540px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,.25); display:flex; flex-direction:column; }
-  .panel-header { display:flex; align-items:center; justify-content:space-between; padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); flex-shrink:0; }
-  .panel-header h2 { font-size:16px; font-weight:700; }
-  .btn-close { background:none; border:none; font-size:22px; cursor:pointer; color:var(--text2); line-height:1; padding:4px; }
-  .panel-body { padding:1.5rem; flex:1; }
-
-  .form-group { margin-bottom:1rem; }
-  .form-group label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em; }
-  .form-group input,.form-group select,.form-group textarea { width:100%; padding:9px 12px; border:1px solid var(--border2); border-radius:var(--radius-sm); font-size:13px; font-family:inherit; color:var(--text); background:var(--surface); outline:none; transition:border-color .2s; }
-  .form-group input:focus,.form-group select:focus,.form-group textarea:focus { border-color:var(--navy); }
-  .form-group textarea { resize:vertical; min-height:72px; }
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .caption-hint { font-size:11px; color:var(--text3); margin-top:5px; font-style:italic; line-height:1.4; }
-  .form-actions { display:flex; gap:8px; justify-content:flex-end; padding-top:1rem; border-top:1px solid var(--border); margin-top:1rem; }
-  .btn-cancel { padding:9px 18px; border:1px solid var(--border2); background:var(--surface); border-radius:var(--radius-sm); font-size:13px; cursor:pointer; }
-  .btn-save { padding:9px 20px; background:var(--navy); color:#fff; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; }
-  .btn-save:hover { background:#0d2347; }
-
-  .draft-meta { display:flex; align-items:center; gap:12px; padding-bottom:1rem; margin-bottom:1rem; border-bottom:1px solid var(--border); }
-  .draft-avatar { width:40px; height:40px; background:#e8edf5; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px; }
-  .draft-meta-info p { font-size:14px; font-weight:600; margin-bottom:4px; }
-  .draft-tags { display:flex; gap:6px; flex-wrap:wrap; }
-  .draft-tag { font-size:11px; padding:2px 8px; border-radius:99px; font-weight:600; }
-  .draft-tag-format { background:var(--surface2); color:var(--text2); }
-  #draft-loading { display:flex; align-items:center; gap:10px; padding:1.5rem 0; color:var(--text2); font-size:13px; }
-  .spinner { width:18px; height:18px; border:2px solid var(--border2); border-top-color:var(--navy); border-radius:50%; animation:spin 1s linear infinite; flex-shrink:0; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-
-  .draft-sections { display:none; }
-  .draft-section { margin-bottom:1rem; }
-  .draft-section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text2); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
-  .draft-section-label::after { content:''; flex:1; height:1px; background:var(--border); }
-  .draft-caption-box { background:var(--surface2); border-radius:var(--radius-sm); padding:10px 14px; font-size:13px; color:var(--text2); font-style:italic; border-left:3px solid var(--navy); }
-  .draft-text-box { font-size:14px; line-height:1.75; color:var(--text); white-space:pre-wrap; max-height:320px; overflow-y:auto; padding:10px 14px; background:var(--surface2); border-radius:var(--radius-sm); }
-
-  .draft-actions { display:flex; gap:8px; justify-content:flex-end; padding-top:1rem; margin-top:1rem; border-top:1px solid var(--border); flex-shrink:0; flex-wrap:wrap; }
-  .btn-regen { padding:8px 14px; border:1px solid var(--border2); background:var(--surface); border-radius:var(--radius-sm); font-size:12px; cursor:pointer; display:none; }
-  .btn-copy { padding:8px 14px; background:var(--green); color:#fff; border:none; border-radius:var(--radius-sm); font-size:12px; font-weight:600; cursor:pointer; display:none; }
-  .btn-copy-cap { padding:8px 14px; background:var(--navy); color:#fff; border:none; border-radius:var(--radius-sm); font-size:12px; font-weight:600; cursor:pointer; display:none; }
-
-  @media(max-width:600px) { .stats-grid{grid-template-columns:repeat(2,1fr);} .form-row{grid-template-columns:1fr;} header{padding:0 1rem;} main{padding:1rem;} }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f8fa;--sur:#fff;--sur2:#f0f4f8;--brd:#e2e8f0;--brd2:#cbd5e1;
+  --txt:#1e293b;--txt2:#64748b;--txt3:#94a3b8;
+  --navy:#1B3A6B;--blue:#0077B5;--bbg:#e8f4fd;--btxt:#0d4f7c;
+  --grn:#16a34a;--gbg:#dcfce7;--gtxt:#14532d;
+  --amb:#d97706;--abg:#fef3c7;--atxt:#78350f;
+  --red:#dc2626;--rbg:#fee2e2;
+  --iga:#E1306C;--igbg:#fce4ec;--fbb:#1877F2;--fbbg:#e8f0fe;
+  --r:10px;--rs:6px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.5;min-height:100vh}
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,#1B3A6B,#0d2347)}
+#gbox{background:#fff;border-radius:20px;padding:2.5rem 2rem;max-width:420px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,.3);text-align:center}
+#glogo{width:140px;margin:0 auto 1.25rem;display:block}
+#gbox h1{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+.sub{font-size:13px;color:var(--txt2);margin-bottom:1.5rem;line-height:1.6}
+#ki{width:100%;padding:10px 14px;border:1.5px solid var(--brd2);border-radius:var(--rs);font-size:13px;font-family:monospace;margin-bottom:1rem;outline:none}
+#gbtn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer}
+#gnote{font-size:11px;color:var(--txt3);margin-top:1rem;line-height:1.6}
+header{background:var(--sur);border-bottom:1px solid var(--brd);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.hl{display:flex;align-items:center;gap:12px}
+.hlogo{height:38px;width:auto}
+.hdv{width:1px;height:28px;background:var(--brd2)}
+.hb{font-size:13px;font-weight:700;color:var(--navy)}
+.hs{font-size:11px;color:var(--txt2)}
+#bnew{padding:8px 18px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer}
+main{max-width:1100px;margin:0 auto;padding:1.5rem}
+.sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:1.5rem}
+.sc{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1rem 1.25rem}
+.sc .lb{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:6px}
+.sc .vl{font-size:28px;font-weight:700;color:var(--txt)}
+.sc.pub .vl{color:var(--grn)}.sc.sch .vl{color:var(--navy)}.sc.dra .vl{color:var(--amb)}
+.flt{display:flex;gap:8px;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap}
+.flt select{padding:7px 12px;border:1px solid var(--brd2);border-radius:var(--rs);font-size:13px;background:var(--sur);color:var(--txt);cursor:pointer;outline:none}
+.fct{margin-left:auto;font-size:12px;color:var(--txt2)}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+.ct{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.bdg{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.bp{background:var(--gbg);color:var(--gtxt)}.bs{background:#e8edf5;color:var(--navy)}.bd{background:var(--abg);color:var(--atxt)}
+.ptg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.pli{background:var(--bbg);color:var(--btxt)}.pig{background:var(--igbg);color:var(--iga)}.pfb{background:var(--fbbg);color:var(--fbb)}
+.cdt{font-size:12px;color:var(--txt2)}
+.ctop{font-size:14px;font-weight:600;color:var(--txt);line-height:1.4}
+.cmt{font-size:12px;color:var(--txt2)}
+.cca{font-size:12px;color:var(--txt2);background:var(--sur2);border-radius:var(--rs);padding:7px 10px;font-style:italic}
+.cdr{font-size:11px;font-weight:600;color:var(--grn);display:flex;align-items:center;gap:4px}
+.cdr::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0}
+.ca{display:flex;gap:6px;margin-top:auto;padding-top:10px;border-top:1px solid var(--brd)}
+.btn{flex:1;padding:5px 0;border:1px solid var(--brd2);background:var(--sur);border-radius:var(--rs);font-size:12px;color:var(--txt);cursor:pointer;text-align:center}
+.btn:hover{background:var(--sur2)}
+.bai{border-color:var(--navy);color:var(--navy);font-weight:600}
+.bai.done{border-color:var(--grn);color:var(--grn)}
+.bdl{flex:0 0 32px;border-color:#fca5a5;color:var(--red);font-weight:700}
+#empty{display:none;text-align:center;padding:4rem 1rem;color:var(--txt2)}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
+#ov.open{display:flex}
+#pb{background:var(--sur);border-radius:14px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--brd);flex-shrink:0}
+.ph h2{font-size:16px;font-weight:700}
+.bx{background:none;border:none;font-size:22px;cursor:pointer;color:var(--txt2);line-height:1;padding:4px}
+.pbd{padding:1.5rem;flex:1}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1px solid var(--brd2);border-radius:var(--rs);font-size:13px;font-family:inherit;color:var(--txt);background:var(--sur);outline:none}
+.fg textarea{resize:vertical;min-height:72px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:11px;color:var(--txt3);margin-top:5px;font-style:italic}
+.fa{display:flex;gap:8px;justify-content:flex-end;padding-top:1rem;border-top:1px solid var(--brd);margin-top:1rem}
+.bcn{padding:9px 18px;border:1px solid var(--brd2);background:var(--sur);border-radius:var(--rs);font-size:13px;cursor:pointer}
+.bsv{padding:9px 20px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer}
+.dm{display:flex;align-items:center;gap:12px;padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid var(--brd)}
+.dav{width:40px;height:40px;background:#e8edf5;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700;color:var(--navy)}
+.dmi p{font-size:14px;font-weight:600;margin-bottom:4px}
+.dtgs{display:flex;gap:6px;flex-wrap:wrap}
+.dtg{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600;background:var(--sur2);color:var(--txt2)}
+#dld{display:flex;align-items:center;gap:10px;padding:1.5rem 0;color:var(--txt2);font-size:13px}
+.sp{width:18px;height:18px;border:2px solid var(--brd2);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+#dsc{display:none}
+.dsec{margin-bottom:1rem}
+.dsl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.dsl::after{content:'';flex:1;height:1px;background:var(--brd)}
+.dcb{background:var(--sur2);border-radius:var(--rs);padding:10px 14px;font-size:13px;color:var(--txt2);font-style:italic;border-left:3px solid var(--navy)}
+.dtb{font-size:14px;line-height:1.75;color:var(--txt);white-space:pre-wrap;max-height:300px;overflow-y:auto;padding:10px 14px;background:var(--sur2);border-radius:var(--rs)}
+.dact{display:flex;gap:8px;justify-content:flex-end;padding-top:1rem;margin-top:1rem;border-top:1px solid var(--brd);flex-shrink:0;flex-wrap:wrap}
+.bcp{padding:8px 14px;background:var(--grn);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer}
+.bcpc{padding:8px 14px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer}
+@media(max-width:600px){.sg{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}header{padding:0 1rem}main{padding:1rem}}
 </style>
 </head>
 <body>
 
 <div id="gate">
-  <div id="gate-box">
-    <img id="gate-logo" src="logo.png" alt="Vitaminas Tecnológicas">
+  <div id="gbox">
+    <img id="glogo" src="logo.png" alt="Vitaminas Tecnologicas">
     <h1>Calendario Editorial con IA</h1>
-    <p class="subtitle">Ingresa tu API Key de Anthropic para activar la generación de borradores con Claude.</p>
-    <input type="password" id="key-input" placeholder="sk-ant-api03-..." autocomplete="off">
-    <button id="gate-btn" onclick="activateApp()">Ingresar al calendario →</button>
-    <p id="gate-note">Tu clave se guarda solo en esta sesión del navegador.<br>Obtén tu key en <strong>console.anthropic.com</strong></p>
-    <a class="li-link" href="https://www.linkedin.com/in/liliana-bayona" target="_blank">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="#0077B5"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-      linkedin.com/in/liliana-bayona
-    </a>
+    <p class="sub">Ingresa tu API Key de Anthropic para activar la generacion de borradores con Claude.</p>
+    <input type="password" id="ki" placeholder="sk-ant-api03-..." autocomplete="off">
+    <button id="gbtn" onclick="go()">Ingresar al calendario</button>
+    <p id="gnote">Tu clave se guarda solo en esta sesion.<br>Obtenla en <strong>console.anthropic.com</strong></p>
   </div>
 </div>
 
-<div id="app" style="display:none;">
+<div id="app" style="display:none">
   <header>
-    <div class="header-left">
-      <img class="header-logo" src="logo.png" alt="Vitaminas Tecnológicas">
-      <div class="header-divider"></div>
-      <div class="header-text">
-        <div class="brand">Vitaminas Tecnológicas</div>
-        <div class="brand-sub">Calendario editorial con IA</div>
-      </div>
+    <div class="hl">
+      <img class="hlogo" src="logo.png" alt="Vitaminas Tecnologicas">
+      <div class="hdv"></div>
+      <div><div class="hb">Vitaminas Tecnologicas</div><div class="hs">Calendario editorial con IA</div></div>
     </div>
-    <button id="btn-new" onclick="openForm(null)">+ Nueva publicación</button>
+    <button id="bnew" onclick="openForm(0)">+ Nueva publicacion</button>
   </header>
   <main>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="label">Total</div><div class="value" id="st-total">0</div></div>
-      <div class="stat-card published"><div class="label">Publicados</div><div class="value" id="st-pub">0</div></div>
-      <div class="stat-card scheduled"><div class="label">Programados</div><div class="value" id="st-sch">0</div></div>
-      <div class="stat-card draft"><div class="label">Borradores</div><div class="value" id="st-dra">0</div></div>
+    <div class="sg">
+      <div class="sc"><div class="lb">Total</div><div class="vl" id="s0">0</div></div>
+      <div class="sc pub"><div class="lb">Publicados</div><div class="vl" id="s1">0</div></div>
+      <div class="sc sch"><div class="lb">Programados</div><div class="vl" id="s2">0</div></div>
+      <div class="sc dra"><div class="lb">Borradores</div><div class="vl" id="s3">0</div></div>
     </div>
-    <div class="filters">
-      <select id="f-status" onchange="renderPosts()">
+    <div class="flt">
+      <select id="fst" onchange="render()">
         <option value="">Todos los estados</option>
-        <option value="Borrador">Borrador</option>
-        <option value="Programado">Programado</option>
-        <option value="Publicado">Publicado</option>
+        <option>Borrador</option><option>Programado</option><option>Publicado</option>
       </select>
-      <select id="f-format" onchange="renderPosts()">
+      <select id="fff" onchange="render()">
         <option value="">Todos los formatos</option>
-        <option value="Texto">Texto</option>
-        <option value="Carrusel">Carrusel</option>
-        <option value="Video">Video</option>
-        <option value="Artículo">Artículo</option>
+        <option>Texto</option><option>Carrusel</option><option>Video</option><option>Articulo</option>
       </select>
-      <select id="f-platform" onchange="renderPosts()">
+      <select id="fpl" onchange="render()">
         <option value="">Todas las redes</option>
-        <option value="LinkedIn">LinkedIn</option>
-        <option value="Instagram">Instagram</option>
-        <option value="Facebook">Facebook</option>
+        <option>LinkedIn</option><option>Instagram</option><option>Facebook</option>
       </select>
-      <span class="filter-count" id="f-count"></span>
+      <span class="fct" id="fct"></span>
     </div>
-    <div id="posts-grid"></div>
-    <div id="empty-state"><p>Sin publicaciones con estos filtros</p><small>Cambia los filtros o agrega una nueva publicación</small></div>
+    <div id="grid"></div>
+    <div id="empty"><p>Sin publicaciones con estos filtros</p></div>
   </main>
 </div>
 
-<div id="panel-overlay">
-  <div id="panel-box">
-    <div class="panel-header">
-      <h2 id="panel-title"></h2>
-      <button class="btn-close" onclick="closePanel()">×</button>
-    </div>
-    <div class="panel-body" id="panel-body"></div>
+<div id="ov">
+  <div id="pb">
+    <div class="ph"><h2 id="pt"></h2><button class="bx" onclick="closePnl()">x</button></div>
+    <div class="pbd" id="pbd"></div>
   </div>
 </div>
 
 <script>
-let API_KEY = '';
-const CAPTION_INFO = {
-  LinkedIn: { label: 'Caption LinkedIn', placeholder: '👇 Guarda este post para revisarlo cuando lo necesites', hint: 'En LinkedIn el caption va integrado al cuerpo del post, antes de los hashtags.' },
-  Instagram: { label: 'Caption Instagram', placeholder: '¿Te identificas? 🙌 Comenta abajo tu experiencia', hint: 'Instagram: aparece debajo de la imagen. Sé directo, usa emojis, máx. 2200 chars.' },
-  Facebook: { label: 'Caption Facebook', placeholder: 'Comparte con alguien que necesite leer esto 💙', hint: 'Facebook: aparece sobre el contenido. Invita a la conversación con una pregunta.' }
-};
-const FORMAT_INST = {
-  Texto: 'Post directo: gancho impactante en la primera línea, desarrollo en párrafos cortos, cierre con CTA.',
-  Carrusel: 'Estructura slide a slide bien etiquetada:\nSLIDE 1 - GANCHO: título llamativo\nSLIDE 2 al 5: un punto clave por slide (título corto + 2-3 líneas)\nSLIDE FINAL: CTA claro.',
-  Video: 'Caption para acompañar el video: primera línea gancho, describe el valor del video en 2-3 líneas, CTA para ver/guardar.',
-  'Artículo': 'Artículo largo:\nTÍTULO SEO\nINTRO (contexto + problema)\n3-4 SECCIONES con subtítulos\nCIERRE con reflexión o pregunta abierta.'
-};
-const PLATFORM_INST = {
-  LinkedIn: 'Tono profesional y reflexivo. Máx. 280 palabras. Saltos de línea para facilitar lectura. Termina con 4-5 hashtags profesionales.',
-  Instagram: 'Tono cercano, dinámico y con emojis. Máx. 150 palabras. Párrafos muy cortos (1-2 líneas). Termina con 10 hashtags mixtos (populares + nicho).',
-  Facebook: 'Tono conversacional y cálido. Máx. 200 palabras. Invita a comentar o compartir. Termina con 3-4 hashtags simples.'
-};
-const PLATFORM_ICON = { LinkedIn: '💼', Instagram: '📸', Facebook: '👥' };
-const PTAG_CLASS = { LinkedIn: 'ptag-li', Instagram: 'ptag-ig', Facebook: 'ptag-fb' };
+var KEY = '';
+var AID = 0;
+var NID = 7;
 
-let posts = [
-  { id:1, date:"2026-04-07", topic:"5 formas de usar Claude en tu trabajo diario", platform:"LinkedIn", format:"Carrusel", status:"Programado", cta:"¿Ya usas IA en tu día a día? Cuéntame abajo", caption:"👇 Guarda este carrusel — lo necesitarás pronto", notes:"Incluir capturas de pantalla reales", draft:"", captionDraft:"" },
-  { id:2, date:"2026-04-10", topic:"Por qué los profesionales de sistemas deben aprender prompt engineering", platform:"LinkedIn", format:"Texto", status:"Borrador", cta:"Guarda este post para compartir con tus alumnos", caption:"", notes:"", draft:"", captionDraft:"" },
-  { id:3, date:"2026-04-14", topic:"Tutorial: automatiza tu calendario editorial con IA", platform:"LinkedIn", format:"Video", status:"Programado", cta:"Sígueme para más tutoriales cada semana", caption:"", notes:"Video corto, 60-90 segundos", draft:"", captionDraft:"" },
-  { id:4, date:"2026-04-03", topic:"La IA no reemplaza, transforma el trabajo", platform:"LinkedIn", format:"Texto", status:"Publicado", cta:"Comparte si estás de acuerdo", caption:"", notes:"", draft:"¿Sientes que la IA amenaza tu trabajo?\n\nYo también lo pensé.\n\nPero después de meses explorando herramientas como Claude, llegué a una conclusión distinta:\n\nLa IA no reemplaza personas. Reemplaza tareas repetitivas y nos libera para lo que realmente importa: pensar, crear, conectar.\n\n#InteligenciaArtificial #VitaminasTecnológicas #TransformaciónDigital", captionDraft:"" },
-  { id:5, date:"2026-04-21", topic:"Cómo construir un portafolio digital con herramientas gratuitas", platform:"Instagram", format:"Carrusel", status:"Borrador", cta:"¿Te gustaría un template gratuito? Comenta SÍ", caption:"✨ Tu portafolio dice más que tu CV", notes:"Mencionar Canva, Notion, GitHub Pages", draft:"", captionDraft:"" },
-  { id:6, date:"2026-04-28", topic:"Recap: avances de IA en abril 2026", platform:"Facebook", format:"Texto", status:"Borrador", cta:"¿Qué novedad te sorprendió más este mes?", caption:"", notes:"", draft:"", captionDraft:"" }
+var P = [
+  {id:1,date:'2026-04-07',topic:'5 formas de usar Claude en tu trabajo diario',platform:'LinkedIn',format:'Carrusel',status:'Programado',cta:'Ya usas IA en tu dia a dia?',caption:'Guarda este carrusel, lo necesitaras pronto',notes:'Capturas de pantalla reales',draft:'',cap:''},
+  {id:2,date:'2026-04-10',topic:'Por que los profesionales deben aprender prompt engineering',platform:'LinkedIn',format:'Texto',status:'Borrador',cta:'Guarda este post para compartir con tus alumnos',caption:'',notes:'',draft:'',cap:''},
+  {id:3,date:'2026-04-14',topic:'Tutorial: automatiza tu calendario editorial con IA',platform:'LinkedIn',format:'Video',status:'Programado',cta:'Sigueme para mas tutoriales',caption:'',notes:'Video 60-90 segundos',draft:'',cap:''},
+  {id:4,date:'2026-04-03',topic:'La IA no reemplaza, transforma el trabajo',platform:'LinkedIn',format:'Texto',status:'Publicado',cta:'Comparte si estas de acuerdo',caption:'',notes:'',draft:'La IA no reemplaza personas.\n\nReemplaza tareas repetitivas y nos libera para lo que realmente importa.\n\nComo ingeniera de sistemas y docente, uso la IA para documentar procesos 3x mas rapido y preparar materiales de clase mas interactivos.\n\n#InteligenciaArtificial #VitaminasTecnologicas',cap:'La IA no te reemplaza, te potencia'},
+  {id:5,date:'2026-04-21',topic:'Como construir un portafolio digital con herramientas gratuitas',platform:'Instagram',format:'Carrusel',status:'Borrador',cta:'Te gustaria un template? Comenta SI',caption:'Tu portafolio dice mas que tu CV',notes:'Canva, Notion, GitHub Pages',draft:'',cap:''},
+  {id:6,date:'2026-04-28',topic:'Recap: avances de IA en abril 2026',platform:'Facebook',format:'Texto',status:'Borrador',cta:'Que novedad te sorprendio mas?',caption:'',notes:'',draft:'',cap:''}
 ];
-let nextId = 7;
-let activeDraftId = null;
 
-function activateApp() {
-  const k = document.getElementById('key-input').value.trim();
-  if (!k.startsWith('sk-ant-')) {
-    document.getElementById('key-input').style.borderColor = '#dc2626';
-    document.getElementById('gate-note').innerHTML = '<span style="color:#dc2626">⚠ La clave debe comenzar con sk-ant-</span>';
+function go() {
+  var k = document.getElementById('ki').value.trim();
+  if (k.indexOf('sk-ant-') !== 0) {
+    document.getElementById('ki').style.borderColor = '#dc2626';
+    document.getElementById('gnote').textContent = 'La clave debe comenzar con sk-ant-';
     return;
   }
-  API_KEY = k;
+  KEY = k;
   document.getElementById('gate').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  renderPosts(); updateStats();
-}
-document.getElementById('key-input').addEventListener('keydown', e => { if(e.key==='Enter') activateApp(); });
-
-function fmtDate(d) { if(!d) return ''; return new Date(d+'T12:00:00').toLocaleDateString('es-PE',{day:'numeric',month:'short',year:'numeric'}); }
-function badgeClass(s) { return s==='Publicado'?'badge-pub':s==='Programado'?'badge-sch':'badge-dra'; }
-
-function renderPosts() {
-  const sf=document.getElementById('f-status').value;
-  const ff=document.getElementById('f-format').value;
-  const pf=document.getElementById('f-platform').value;
-  let filtered=posts.filter(p=>(!sf||p.status===sf)&&(!ff||p.format===ff)&&(!pf||p.platform===pf)).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  document.getElementById('f-count').textContent=filtered.length+' publicación'+(filtered.length!==1?'es':'');
-  const empty=document.getElementById('empty-state'); const grid=document.getElementById('posts-grid');
-  if(filtered.length===0){grid.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  grid.innerHTML=filtered.map(p=>`
-    <div class="post-card">
-      <div class="card-top">
-        <span class="badge ${badgeClass(p.status)}">${p.status}</span>
-        <span class="platform-tag ${PTAG_CLASS[p.platform]}">${PLATFORM_ICON[p.platform]} ${p.platform}</span>
-        <span class="card-date">${fmtDate(p.date)}</span>
-      </div>
-      <div><div class="card-topic">${p.topic}</div><div class="card-meta">${p.format}</div></div>
-      ${p.caption?`<div class="card-cta">"${p.caption}"</div>`:''}
-      ${p.draft?'<div class="card-draft-badge">Borrador IA listo</div>':''}
-      <div class="card-actions">
-        <button class="btn-sm" onclick="openForm(${p.id})">Editar</button>
-        <button class="btn-sm btn-ai ${p.draft?'done':''}" onclick="openDraft(${p.id})">${p.draft?'Ver borrador':'Generar con IA'}</button>
-        <button class="btn-sm btn-del" onclick="deletePost(${p.id})">×</button>
-      </div>
-    </div>`).join('');
+  render();
+  stats();
 }
 
-function updateStats() {
-  document.getElementById('st-total').textContent=posts.length;
-  document.getElementById('st-pub').textContent=posts.filter(p=>p.status==='Publicado').length;
-  document.getElementById('st-sch').textContent=posts.filter(p=>p.status==='Programado').length;
-  document.getElementById('st-dra').textContent=posts.filter(p=>p.status==='Borrador').length;
+document.getElementById('ki').onkeydown = function(e) {
+  if (e.key === 'Enter') go();
+};
+
+function fd(d) {
+  if (!d) return '';
+  return new Date(d + 'T12:00:00').toLocaleDateString('es-PE', {day:'numeric',month:'short',year:'numeric'});
 }
 
-function deletePost(id){if(!confirm('¿Eliminar esta publicación?'))return;posts=posts.filter(p=>p.id!==id);renderPosts();updateStats();}
-function openPanel(title){document.getElementById('panel-title').textContent=title;document.getElementById('panel-overlay').classList.add('open');}
-function closePanel(){document.getElementById('panel-overlay').classList.remove('open');document.getElementById('panel-body').innerHTML='';}
-document.getElementById('panel-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('panel-overlay'))closePanel();});
+function bc(s) {
+  return s === 'Publicado' ? 'bp' : s === 'Programado' ? 'bs' : 'bd';
+}
+
+function pc(pl) {
+  return pl === 'LinkedIn' ? 'pli' : pl === 'Instagram' ? 'pig' : 'pfb';
+}
+
+function mkEl(tag, cls, txt) {
+  var el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (txt !== undefined) el.textContent = txt;
+  return el;
+}
+
+function render() {
+  var sf = document.getElementById('fst').value;
+  var ff = document.getElementById('fff').value;
+  var fp = document.getElementById('fpl').value;
+  var list = P.filter(function(p) {
+    return (!sf || p.status === sf) && (!ff || p.format === ff) && (!fp || p.platform === fp);
+  });
+  list.sort(function(a,b) { return a.date < b.date ? -1 : 1; });
+  document.getElementById('fct').textContent = list.length + (list.length !== 1 ? ' publicaciones' : ' publicacion');
+  var g = document.getElementById('grid');
+  var e = document.getElementById('empty');
+  g.innerHTML = '';
+  if (list.length === 0) { e.style.display = 'block'; return; }
+  e.style.display = 'none';
+  list.forEach(function(p) {
+    var card = mkEl('div','card');
+    var ct = mkEl('div','ct');
+    ct.appendChild(mkEl('span','bdg ' + bc(p.status), p.status));
+    ct.appendChild(mkEl('span','ptg ' + pc(p.platform), p.platform));
+    ct.appendChild(mkEl('span','cdt', fd(p.date)));
+    card.appendChild(ct);
+    var info = mkEl('div');
+    info.appendChild(mkEl('div','ctop', p.topic));
+    info.appendChild(mkEl('div','cmt', p.format));
+    card.appendChild(info);
+    if (p.caption) card.appendChild(mkEl('div','cca', p.caption));
+    if (p.draft) card.appendChild(mkEl('div','cdr', 'Borrador IA listo'));
+    var ca = mkEl('div','ca');
+    var be = mkEl('button','btn', 'Editar');
+    be.onclick = (function(id){ return function(){ openForm(id); }; })(p.id);
+    var bai = mkEl('button', 'btn bai' + (p.draft ? ' done' : ''), p.draft ? 'Ver borrador' : 'Generar con IA');
+    bai.onclick = (function(id){ return function(){ openDraft(id); }; })(p.id);
+    var bdl = mkEl('button','btn bdl', 'x');
+    bdl.onclick = (function(id){ return function(){ del(id); }; })(p.id);
+    ca.appendChild(be); ca.appendChild(bai); ca.appendChild(bdl);
+    card.appendChild(ca);
+    g.appendChild(card);
+  });
+}
+
+function stats() {
+  document.getElementById('s0').textContent = P.length;
+  document.getElementById('s1').textContent = P.filter(function(p){ return p.status === 'Publicado'; }).length;
+  document.getElementById('s2').textContent = P.filter(function(p){ return p.status === 'Programado'; }).length;
+  document.getElementById('s3').textContent = P.filter(function(p){ return p.status === 'Borrador'; }).length;
+}
+
+function del(id) {
+  if (!confirm('Eliminar esta publicacion?')) return;
+  P = P.filter(function(p){ return p.id !== id; });
+  render(); stats();
+}
+
+function openPnl(t) {
+  document.getElementById('pt').textContent = t;
+  document.getElementById('ov').classList.add('open');
+}
+function closePnl() {
+  document.getElementById('ov').classList.remove('open');
+  document.getElementById('pbd').innerHTML = '';
+}
+document.getElementById('ov').onclick = function(e) {
+  if (e.target === document.getElementById('ov')) closePnl();
+};
+
+var CAPS = {
+  LinkedIn: {lb:'Caption LinkedIn', ph:'Guarda este post para revisarlo cuando lo necesites', ht:'En LinkedIn el caption va integrado al post.'},
+  Instagram: {lb:'Caption Instagram', ph:'Comenta abajo tu experiencia', ht:'Aparece debajo de la imagen. Usa emojis.'},
+  Facebook: {lb:'Caption Facebook', ph:'Comparte con alguien que lo necesite', ht:'Aparece sobre el contenido. Invita a comentar.'}
+};
+
+function sel(id, opts, val) {
+  var s = document.createElement('select');
+  s.id = id;
+  opts.forEach(function(o) {
+    var op = document.createElement('option');
+    op.textContent = o;
+    if (o === val) op.selected = true;
+    s.appendChild(op);
+  });
+  return s;
+}
+
+function inp(id, type, val, ph) {
+  var i = document.createElement('input');
+  i.id = id; i.type = type; i.value = val || '';
+  if (ph) i.placeholder = ph;
+  return i;
+}
+
+function fg(lbTxt, el) {
+  var d = mkEl('div','fg');
+  d.appendChild(mkEl('label','',lbTxt));
+  d.appendChild(el);
+  return d;
+}
 
 function openForm(id) {
-  const p=id?posts.find(x=>x.id===id):null;
-  const plat=p?p.platform:'LinkedIn';
-  const ci=CAPTION_INFO[plat];
-  openPanel(p?'Editar publicación':'Nueva publicación');
-  document.getElementById('panel-body').innerHTML=`
-    <div class="form-group"><label>Tema / título *</label><input id="fl-topic" type="text" placeholder="¿De qué trata este post?" value="${p?p.topic.replace(/"/g,'&quot;'):''}" ></div>
-    <div class="form-row">
-      <div class="form-group"><label>Fecha</label><input id="fl-date" type="date" value="${p?p.date:new Date().toISOString().split('T')[0]}"></div>
-      <div class="form-group"><label>Formato</label><select id="fl-format">${['Texto','Carrusel','Video','Artículo'].map(f=>`<option ${p&&p.format===f?'selected':''}>${f}</option>`).join('')}</select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Red social</label><select id="fl-platform" onchange="updateCaptionLabel()">${['LinkedIn','Instagram','Facebook'].map(f=>`<option ${p&&p.platform===f?'selected':''}>${f}</option>`).join('')}</select></div>
-      <div class="form-group"><label>Estado</label><select id="fl-status">${['Borrador','Programado','Publicado'].map(f=>`<option ${p&&p.status===f?'selected':''}>${f}</option>`).join('')}</select></div>
-    </div>
-    <div class="form-group"><label>CTA (llamada a la acción)</label><input id="fl-cta" type="text" placeholder="Ej: Comenta abajo..." value="${p?p.cta.replace(/"/g,'&quot;'):''}" ></div>
-    <div class="form-group" id="caption-group">
-      <label id="caption-label">${ci.label}</label>
-      <input id="fl-caption" type="text" placeholder="${ci.placeholder}" value="${p?p.caption.replace(/"/g,'&quot;'):''}" >
-      <p class="caption-hint" id="caption-hint">${ci.hint}</p>
-    </div>
-    <div class="form-group"><label>Notas internas</label><textarea id="fl-notes">${p?p.notes:''}</textarea></div>
-    <div class="form-actions"><button class="btn-cancel" onclick="closePanel()">Cancelar</button><button class="btn-save" onclick="savePost(${id||'null'})">Guardar</button></div>`;
+  var p = id ? P.find(function(x){ return x.id === id; }) : null;
+  var pl = p ? p.platform : 'LinkedIn';
+  openPnl(p ? 'Editar publicacion' : 'Nueva publicacion');
+  var pbd = document.getElementById('pbd');
+  pbd.innerHTML = '';
+
+  pbd.appendChild(fg('Tema *', inp('ft','text', p ? p.topic : '', 'De que trata este post?')));
+
+  var fr1 = mkEl('div','fr');
+  fr1.appendChild(fg('Fecha', inp('fd','date', p ? p.date : new Date().toISOString().split('T')[0])));
+  fr1.appendChild(fg('Formato', sel('fo', ['Texto','Carrusel','Video','Articulo'], p ? p.format : 'Texto')));
+  pbd.appendChild(fr1);
+
+  var fr2 = mkEl('div','fr');
+  var spl = sel('fpp', ['LinkedIn','Instagram','Facebook'], pl);
+  spl.onchange = updC;
+  fr2.appendChild(fg('Red social', spl));
+  fr2.appendChild(fg('Estado', sel('fss', ['Borrador','Programado','Publicado'], p ? p.status : 'Borrador')));
+  pbd.appendChild(fr2);
+
+  pbd.appendChild(fg('CTA', inp('fct2','text', p ? p.cta : '', 'Comenta abajo...')));
+
+  var ci = CAPS[pl];
+  var capFg = mkEl('div','fg');
+  capFg.appendChild(mkEl('label','','id_cl'));
+  var lbEl = mkEl('label','', ci.lb); lbEl.id = 'cl';
+  var caEl = inp('fca','text', p ? p.caption : '', ci.ph);
+  var htEl = mkEl('p','hint', ci.ht); htEl.id = 'ch';
+  capFg.appendChild(lbEl); capFg.appendChild(caEl); capFg.appendChild(htEl);
+  pbd.appendChild(capFg);
+
+  var ta = document.createElement('textarea');
+  ta.id = 'fn'; ta.textContent = p ? p.notes : '';
+  pbd.appendChild(fg('Notas', ta));
+
+  var fa = mkEl('div','fa');
+  var bc2 = mkEl('button','bcn','Cancelar'); bc2.onclick = closePnl;
+  var bsv = mkEl('button','bsv','Guardar');
+  bsv.onclick = (function(pid){ return function(){ saveP(pid); }; })(id || 0);
+  fa.appendChild(bc2); fa.appendChild(bsv);
+  pbd.appendChild(fa);
 }
 
-function updateCaptionLabel() {
-  const plat=document.getElementById('fl-platform').value;
-  const ci=CAPTION_INFO[plat];
-  document.getElementById('caption-label').textContent=ci.label;
-  document.getElementById('fl-caption').placeholder=ci.placeholder;
-  document.getElementById('caption-hint').textContent=ci.hint;
+function updC() {
+  var pl = document.getElementById('fpp').value;
+  var ci = CAPS[pl];
+  document.getElementById('cl').textContent = ci.lb;
+  document.getElementById('fca').placeholder = ci.ph;
+  document.getElementById('ch').textContent = ci.ht;
 }
 
-function savePost(id) {
-  const topic=document.getElementById('fl-topic').value.trim();
-  if(!topic){alert('El tema es obligatorio');return;}
-  const d={topic,date:document.getElementById('fl-date').value,format:document.getElementById('fl-format').value,platform:document.getElementById('fl-platform').value,status:document.getElementById('fl-status').value,cta:document.getElementById('fl-cta').value,caption:document.getElementById('fl-caption').value,notes:document.getElementById('fl-notes').value};
-  if(id){const i=posts.findIndex(p=>p.id===id);posts[i]={...posts[i],...d};}
-  else{posts.push({id:nextId++,draft:'',captionDraft:'',...d});}
-  closePanel();renderPosts();updateStats();
+function saveP(id) {
+  var t = document.getElementById('ft').value.trim();
+  if (!t) { alert('El tema es obligatorio'); return; }
+  var d = {
+    topic: t,
+    date: document.getElementById('fd').value,
+    format: document.getElementById('fo').value,
+    platform: document.getElementById('fpp').value,
+    status: document.getElementById('fss').value,
+    cta: document.getElementById('fct2').value,
+    caption: document.getElementById('fca').value,
+    notes: document.getElementById('fn').value
+  };
+  if (id) {
+    var i = P.findIndex(function(p){ return p.id === id; });
+    P[i] = Object.assign({}, P[i], d);
+  } else {
+    P.push(Object.assign({id:NID++,draft:'',cap:''}, d));
+  }
+  closePnl(); render(); stats();
 }
 
 function openDraft(id) {
-  activeDraftId=id;
-  const p=posts.find(x=>x.id===id);
-  const icon=PLATFORM_ICON[p.platform]||'📱';
-  const ptClass=PTAG_CLASS[p.platform];
-  openPanel('Borrador con IA');
-  document.getElementById('panel-body').innerHTML=`
-    <div class="draft-meta">
-      <div class="draft-avatar">${icon}</div>
-      <div class="draft-meta-info">
-        <p>${p.topic}</p>
-        <div class="draft-tags">
-          <span class="draft-tag ${ptClass}">${p.platform}</span>
-          <span class="draft-tag draft-tag-format">${p.format}</span>
-          <span class="draft-tag draft-tag-format">${fmtDate(p.date)}</span>
-        </div>
-      </div>
-    </div>
-    <div id="draft-loading"><div class="spinner"></div> Generando con Claude para ${p.platform}...</div>
-    <div class="draft-sections" id="draft-sections">
-      <div class="draft-section">
-        <div class="draft-section-label">Caption ${p.platform}</div>
-        <div class="draft-caption-box" id="draft-caption-box"></div>
-      </div>
-      <div class="draft-section">
-        <div class="draft-section-label">Contenido ${p.format}</div>
-        <div class="draft-text-box" id="draft-text-box"></div>
-      </div>
-    </div>
-    <div class="draft-actions">
-      <button class="btn-regen" id="btn-regen" onclick="regenDraft()">↺ Regenerar</button>
-      <button class="btn-copy-cap" id="btn-copy-cap" onclick="copyCap()">Copiar caption</button>
-      <button class="btn-copy" id="btn-copy" onclick="copyDraft()">Copiar contenido</button>
-      <button class="btn-cancel" onclick="closePanel()">Cerrar</button>
-    </div>`;
-  if(p.draft){showDraft(p.draft,p.captionDraft||'');}else{callClaude(id);}
+  AID = id;
+  var p = P.find(function(x){ return x.id === id; });
+  openPnl('Borrador con IA');
+  var pbd = document.getElementById('pbd');
+  pbd.innerHTML = '';
+
+  var dm = mkEl('div','dm');
+  var dav = mkEl('div','dav', p.platform.substring(0,2).toUpperCase());
+  var dmi = mkEl('div','dmi');
+  dmi.appendChild(mkEl('p','', p.topic));
+  var dtgs = mkEl('div','dtgs');
+  dtgs.appendChild(mkEl('span','dtg '+pc(p.platform), p.platform));
+  dtgs.appendChild(mkEl('span','dtg', p.format));
+  dtgs.appendChild(mkEl('span','dtg', fd(p.date)));
+  dmi.appendChild(dtgs);
+  dm.appendChild(dav); dm.appendChild(dmi);
+  pbd.appendChild(dm);
+
+  var dld = mkEl('div',''); dld.id = 'dld';
+  dld.appendChild(mkEl('div','sp'));
+  dld.appendChild(mkEl('span','', 'Generando con Claude...'));
+  pbd.appendChild(dld);
+
+  var dsc = mkEl('div',''); dsc.id = 'dsc'; dsc.style.display = 'none';
+  var sec1 = mkEl('div','dsec');
+  sec1.appendChild(mkEl('div','dsl','Caption'));
+  var dcb = mkEl('div','dcb'); dcb.id = 'dcb';
+  sec1.appendChild(dcb);
+  var sec2 = mkEl('div','dsec');
+  sec2.appendChild(mkEl('div','dsl','Contenido ' + p.format));
+  var dtb = mkEl('div','dtb'); dtb.id = 'dtb';
+  sec2.appendChild(dtb);
+  dsc.appendChild(sec1); dsc.appendChild(sec2);
+  pbd.appendChild(dsc);
+
+  var dact = mkEl('div','dact');
+  var brg = mkEl('button','bcn','Regenerar'); brg.id = 'brg'; brg.style.display = 'none'; brg.onclick = regen;
+  var bcc = mkEl('button','bcpc','Copiar caption'); bcc.id = 'bcc'; bcc.style.display = 'none'; bcc.onclick = copyCap;
+  var bct = mkEl('button','bcp','Copiar contenido'); bct.id = 'bct'; bct.style.display = 'none'; bct.onclick = copyTxt;
+  var bcl = mkEl('button','bcn','Cerrar'); bcl.onclick = closePnl;
+  dact.appendChild(brg); dact.appendChild(bcc); dact.appendChild(bct); dact.appendChild(bcl);
+  pbd.appendChild(dact);
+
+  if (p.draft) { showD(p.draft, p.cap); } else { callAI(id); }
 }
 
-function showDraft(text, cap) {
-  document.getElementById('draft-loading').style.display='none';
-  document.getElementById('draft-sections').style.display='block';
-  document.getElementById('draft-caption-box').textContent=cap||'—';
-  document.getElementById('draft-text-box').textContent=text;
-  document.getElementById('btn-regen').style.display='inline-block';
-  document.getElementById('btn-copy').style.display='inline-block';
-  document.getElementById('btn-copy-cap').style.display='inline-block';
+function showD(txt, cap) {
+  document.getElementById('dld').style.display = 'none';
+  document.getElementById('dsc').style.display = 'block';
+  document.getElementById('dcb').textContent = cap || '-';
+  document.getElementById('dtb').textContent = txt;
+  document.getElementById('brg').style.display = 'inline-block';
+  document.getElementById('bcc').style.display = 'inline-block';
+  document.getElementById('bct').style.display = 'inline-block';
 }
 
-function regenDraft(){
-  const i=posts.findIndex(p=>p.id===activeDraftId);posts[i].draft='';posts[i].captionDraft='';
-  document.getElementById('draft-loading').style.display='flex';
-  document.getElementById('draft-sections').style.display='none';
-  ['btn-regen','btn-copy','btn-copy-cap'].forEach(id=>{document.getElementById(id).style.display='none';});
-  callClaude(activeDraftId);
+function regen() {
+  var i = P.findIndex(function(p){ return p.id === AID; });
+  P[i].draft = ''; P[i].cap = '';
+  document.getElementById('dld').style.display = 'flex';
+  document.getElementById('dsc').style.display = 'none';
+  document.getElementById('brg').style.display = 'none';
+  document.getElementById('bcc').style.display = 'none';
+  document.getElementById('bct').style.display = 'none';
+  callAI(AID);
 }
 
-function copyDraft(){const t=document.getElementById('draft-text-box').textContent;navigator.clipboard.writeText(t).then(()=>{const b=document.getElementById('btn-copy');b.textContent='✓ Copiado';setTimeout(()=>{b.textContent='Copiar contenido';},2000);});}
-function copyCap(){const t=document.getElementById('draft-caption-box').textContent;navigator.clipboard.writeText(t).then(()=>{const b=document.getElementById('btn-copy-cap');b.textContent='✓ Copiado';setTimeout(()=>{b.textContent='Copiar caption';},2000);});}
+function copyTxt() {
+  navigator.clipboard.writeText(document.getElementById('dtb').textContent).then(function(){
+    document.getElementById('bct').textContent = 'Copiado';
+    setTimeout(function(){ document.getElementById('bct').textContent = 'Copiar contenido'; }, 2000);
+  });
+}
+function copyCap() {
+  navigator.clipboard.writeText(document.getElementById('dcb').textContent).then(function(){
+    document.getElementById('bcc').textContent = 'Copiado';
+    setTimeout(function(){ document.getElementById('bcc').textContent = 'Copiar caption'; }, 2000);
+  });
+}
 
-async function callClaude(id) {
-  const p=posts.find(x=>x.id===id);
-  const platInst=PLATFORM_INST[p.platform]||PLATFORM_INST.LinkedIn;
-  const fmtInst=FORMAT_INST[p.format]||FORMAT_INST.Texto;
-  const captionLine=p.caption?`Caption definido por la autora: "${p.caption}"\n`:'';
-  const prompt=`Eres experta en marketing de contenidos para redes sociales, especializada en marcas personales de tecnología y educación en Latinoamérica. Escribes en español, con voz auténtica, profesional y cercana.
+var PI = {
+  LinkedIn: 'Tono profesional y reflexivo. Max 280 palabras. Saltos de linea para lectura facil. Termina con 4-5 hashtags profesionales.',
+  Instagram: 'Tono cercano y dinamico con emojis. Max 150 palabras. Parrafos muy cortos. Termina con 10 hashtags mixtos.',
+  Facebook: 'Tono conversacional y calido. Max 200 palabras. Invita a comentar. Termina con 3-4 hashtags.'
+};
+var FI = {
+  Texto: 'Post directo: gancho en la primera linea, desarrollo en parrafos cortos, cierre con CTA.',
+  Carrusel: 'Estructura slide a slide: SLIDE 1 gancho, SLIDES 2-5 un punto por slide, SLIDE FINAL CTA.',
+  Video: 'Caption para video: primera linea gancho, valor en 2-3 lineas, CTA.',
+  Articulo: 'TITULO SEO, INTRO, 3-4 SECCIONES con subtitulos, CIERRE con reflexion.'
+};
 
-Crea contenido para ${p.platform} sobre el tema: "${p.topic}".
+function callAI(id) {
+  var p = P.find(function(x){ return x.id === id; });
+  var pinst = PI[p.platform] || PI.LinkedIn;
+  var finst = FI[p.format] || FI.Texto;
+  var prompt = 'Eres experta en marketing de contenidos para redes sociales en Latinoamerica. Escribe en espanol con voz autentica y profesional.\n\nCrea contenido para ' + p.platform + ' sobre: ' + p.topic + '\n\nResponde EXACTAMENTE con este formato:\nCAPTION:\n[una linea potente, max 15 palabras, sin hashtags]\n\nCONTENIDO:\n[el contenido completo]\n\nINSTRUCCIONES: ' + pinst + '\nFORMATO: ' + finst + '\nCTA al final: ' + p.cta + (p.notes ? '\nNotas: ' + p.notes : '') + '\nMarca: Vitaminas Tecnologicas - educacion en IA y herramientas digitales.';
 
-FORMATO DE RESPUESTA — responde exactamente con este esquema:
-CAPTION:
-[Una línea potente para usar como caption en ${p.platform}. Máx. 15 palabras. Sin hashtags aquí.]
-
-CONTENIDO:
-[El contenido completo del ${p.format}]
-
-INSTRUCCIONES DE PLATAFORMA: ${platInst}
-INSTRUCCIONES DE FORMATO: ${fmtInst}
-${captionLine}CTA a incluir al final: "${p.cta}"
-${p.notes?`Notas adicionales: ${p.notes}`:''}
-Marca: Vitaminas Tecnológicas — educación en IA, herramientas digitales y productividad para profesionales.`;
-
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    if(data.error)throw new Error(data.error.message);
-    const full=data.content[0].text;
-    const capMatch=full.match(/CAPTION:\s*
-([\s\S]*?)(?=
-CONTENIDO:)/i);
-    const contentMatch=full.match(/CONTENIDO:\s*
-([\s\S]*)/i);
-    const cap=capMatch?capMatch[1].trim():'';
-    const content=contentMatch?contentMatch[1].trim():full;
-    const i=posts.findIndex(x=>x.id===id);
-    posts[i].draft=content; posts[i].captionDraft=cap;
-    showDraft(content,cap); renderPosts();
-  } catch(e) {
-    document.getElementById('draft-loading').innerHTML=`<span style="color:#dc2626;font-size:13px;">⚠ Error: ${e.message}</span>`;
-  }
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1200,
+      messages: [{role:'user', content: prompt}]
+    })
+  }).then(function(r){ return r.json(); }).then(function(data){
+    if (data.error) throw new Error(data.error.message);
+    var full = data.content[0].text;
+    var cap = ''; var txt = full;
+    var ci = full.indexOf('CAPTION:');
+    var coi = full.indexOf('CONTENIDO:');
+    if (ci !== -1 && coi !== -1) {
+      cap = full.substring(ci + 8, coi).trim();
+      txt = full.substring(coi + 10).trim();
+    }
+    var i = P.findIndex(function(x){ return x.id === id; });
+    P[i].draft = txt; P[i].cap = cap;
+    showD(txt, cap); render();
+  }).catch(function(e){
+    document.getElementById('dld').innerHTML = '<span style="color:#dc2626;font-size:13px">Error: ' + e.message + '</span>';
+  });
 }
 </script>
 </body>
 </html>
+
